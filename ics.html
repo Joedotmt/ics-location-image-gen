@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICS Location Image Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.min.js"></script>
+    <style>
+        body {
+            font-family: monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #fileInput,
+        #dateInput {
+            margin-bottom: 1rem;
+        }
+
+        #generateBtn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        #canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ICS Location Image Generator</h1>
+        <p>Generate a lock screen image schedule of where you need to go throughout the day</p>
+        <input type="file" id="fileInput" accept=".ics">
+        <br>
+        <input type="date" id="dateInput">
+        <br>
+        <button id="generateBtn">Generate Image</button>
+        <br>
+        <canvas id="canvas"></canvas>
+        <br>
+        <a id="downloadLink" style="display: none;">Download Image</a>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dateInput = document.getElementById('dateInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const downloadLink = document.getElementById('downloadLink');
+
+        // Set default date to today
+        dateInput.valueAsDate = new Date();
+
+        generateBtn.addEventListener('click', handleGenerate);
+
+        function handleGenerate()
+        {
+            const file = fileInput.files[0];
+            if (!file)
+            {
+                alert('Please select an .ics file.');
+                return;
+            }
+
+            const selectedDate = new Date(dateInput.value);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            const reader = new FileReader();
+            reader.onload = function (e)
+            {
+                const icsData = e.target.result;
+                const jcalData = ICAL.parse(icsData);
+                const comp = new ICAL.Component(jcalData);
+                const vevents = comp.getAllSubcomponents('vevent');
+
+                const eventData = vevents
+                    .filter(vevent =>
+                    {
+                        const eventDate = vevent.getFirstPropertyValue('dtstart').toJSDate();
+                        return eventDate.toDateString() === selectedDate.toDateString();
+                    })
+                    .map(vevent => ({
+                        location: vevent.getFirstPropertyValue('location'),
+                        startTime: vevent.getFirstPropertyValue('dtstart').toJSDate()
+                    }))
+                    .filter(event => event.location); // Remove events with undefined or empty locations
+
+                if (eventData.length === 0)
+                {
+                    alert('No locations found for the selected date in the .ics file.');
+                    return;
+                }
+
+                // Sort events by start time
+                eventData.sort((a, b) => a.startTime - b.startTime);
+
+                const locations = eventData.map(event => event.location);
+                generateImage(locations);
+            };
+            reader.readAsText(file);
+        }
+
+        function generateImage(locations)
+        {
+            const width = 800;
+            const height = 800;
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const maxLocations = Math.min(locations.length, 8);
+            const fontSize = Math.min(100, Math.floor(height / maxLocations) - 20);
+            ctx.font = `bold ${fontSize}px monospace`;
+
+            const lineHeight = Math.floor(height / maxLocations);
+            const startY = lineHeight / 2;
+
+            locations.slice(0, maxLocations).forEach((location, index) =>
+            {
+                const y = startY + index * lineHeight;
+                ctx.fillText(location.toUpperCase(), width / 2, y);
+            });
+
+            const dataURL = canvas.toDataURL('image/png');
+            downloadLink.href = dataURL;
+            downloadLink.download = 'locations.png';
+            downloadLink.style.display = 'inline';
+            downloadLink.textContent = 'Download Image';
+        }
+    </script>
+</body>
+</html>
