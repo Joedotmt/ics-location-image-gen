@@ -1,8 +1,8 @@
 # ICS Location Image Generator
 
-![ICS Location Image Generator](https://joedotmt.github.io/ics-location-image-gen/preview.png)
+[Open Application (web)](https://joedotmt.github.io/ics-location-image-gen)
 
-## [Open Application (web)](https://joedotmt.github.io/ics-location-image-gen)
+[<img src="https://joedotmt.github.io/ics-location-image-gen/preview.png" width="250"/>](https://joedotmt.github.io/ics-location-image-gen/preview.png)
 
 ## Description
 
