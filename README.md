@@ -3,6 +3,7 @@
 [Open Application (web)](https://joedotmt.github.io/ics-location-image-gen)
 
 [<img src="https://joedotmt.github.io/ics-location-image-gen/preview.png" width="250"/>](https://joedotmt.github.io/ics-location-image-gen/preview.png)
+[<img src="https://github.com/user-attachments/assets/3cb17810-ca9a-4022-b890-2c3af654caeb" width="250"/>](https://github.com/user-attachments/assets/3cb17810-ca9a-4022-b890-2c3af654caeb)
 
 ## Description
 
