@@ -33,24 +33,6 @@ This application is built using:
 - [ical.js](https://github.com/mozilla-comm/ical.js) for parsing ICS files
 - HTML5 Canvas for image generation
 
-## Local Development
-
-To run this application locally:
-
-1. Clone this repository:
-   ```
-   git clone https://github.com/your-username/ics-location-image-generator.git
-   ```
-2. Navigate to the project directory:
-   ```
-   cd ics-location-image-generator
-   ```
-3. Open the `index.html` file in your web browser.
-
-## Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/ics-location-image-generator/issues).
-
 ## License
 
-Do whatever you want with this, honestly
+Do whatever you want with this, honestly. AI made this shit anyway (even this readme)
