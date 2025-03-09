@@ -11,17 +11,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            margin: min(5em, 3vw);
+            background-color: #0d1117;
         }
 
         .container {
             text-align: center;
-            background-color: white;
-            padding: 2rem;
+            color: white;
+            background-color: #384251;
+            padding: min(2rem, 3vw);
             border-radius: 8px;
+            max-width: 750px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
         #fileInput,
@@ -29,8 +31,11 @@
             margin-bottom: 1rem;
         }
 
-        #generateBtn {
-            background-color: #4CAF50;
+        button,
+        ::-webkit-file-upload-button {
+            border-radius: 99em;
+            background-color: #697382;
+            box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.348);
             border: none;
             color: white;
             padding: 15px 32px;
@@ -40,12 +45,48 @@
             font-size: 16px;
             margin: 4px 2px;
             cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+            font-family: inherit;
+            position: relative;
+        }
+
+        button:hover,
+        ::-webkit-file-upload-button:hover {
+            box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.348), inset 0 0 0 2px #ffffff;
+        }
+
+        button:active,
+        ::-webkit-file-upload-button:active {
+            box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.348);
+            scale: 0.98;
+        }
+
+        ::-webkit-file-upload-button {
+            margin-right: 1em;
+        }
+
+        input {
+            background-color: #384251;
+            border: 1px solid black;
+            color: white;
+            border-radius: 1em;
+            padding: 1em;
+            width: 100%;
         }
 
         #canvas {
             display: none;
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        #generateBtn {
+            z-index: 1;
+        }
     </style>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
 </head>
 <body>
     <div class="container">
@@ -60,12 +101,15 @@
         <canvas id="canvas"></canvas>
         <br>
         <a id="downloadLink" style="display: none;">Download Image</a>
+        <zero-md style="margin-top:3em; text-align: left; border-radius: 1em; padding: min(5em, 3vw); background-color: #0d1117;" src="README.md"></zero-md>
     </div>
+
 
     <script>
         const fileInput = document.getElementById('fileInput');
         const dateInput = document.getElementById('dateInput');
         const generateBtn = document.getElementById('generateBtn');
+
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const downloadLink = document.getElementById('downloadLink');
@@ -74,13 +118,21 @@
         dateInput.valueAsDate = new Date();
 
         generateBtn.addEventListener('click', handleGenerate);
+        generateBtn.addEventListener("mouseleave", () =>
+        {
+            generateBtn.innerText = `Generate Image`;
+            generateBtn.style.boxShadow = ``;
+            generateBtn.style.scale = 1;
+        });
 
         function handleGenerate()
         {
             const file = fileInput.files[0];
             if (!file)
             {
-                alert('Please select an .ics file.');
+                generateBtn.innerText = `Please select an .ics file.`;
+                generateBtn.style.boxShadow = `0 5px 15px 0 rgba(0, 0, 0, 0.348), inset 0 0 0 2px #ff0000`;
+                generateBtn.style.scale = parseFloat(generateBtn.style.scale) * 1.1;
                 return;
             }
 
